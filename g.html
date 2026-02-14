@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>For Aiko Frac — Happy Valentine's</title>
+	<style>
+		:root{--main:#b71c1c;--accent:#ff6f91}
+		html,body{height:100%;}
+		body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 10% 10%, #fff8f9 0%, #ffeceb 40%, #ffdfe6 100%);}
+		.card{position:relative;width:92%;max-width:760px;padding:40px;border-radius:20px;background:linear-gradient(180deg,#fff,#fff6f7);box-shadow:0 20px 50px rgba(183,28,28,0.12);text-align:center;overflow:hidden}
+		h1{margin:0 0 8px;font-size:2.4rem;color:var(--main);letter-spacing:0.6px}
+		p{margin:0 0 18px;color:#333;font-size:1.05rem}
+		.heart{width:120px;height:120px;margin:0 auto 18px;animation:beat 1000ms infinite;}
+		.heart svg{display:block;width:100%;height:100%}
+		@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+		.float-heart{position:fixed;width:22px;height:22px;transform:rotate(45deg);border-radius:4px;pointer-events:none;opacity:0}
+		@keyframes floatUp{0%{transform:translateY(0) scale(.6) rotate(45deg);opacity:0}10%{opacity:1}100%{transform:translateY(-360px) scale(1) rotate(45deg);opacity:0}}
+		.buttons{display:flex;gap:12px;justify-content:center;margin-top:6px}
+		.btn{padding:10px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
+		.btn.primary{background:var(--main);color:#fff}
+		.btn.ghost{background:#fff;color:var(--main);border:2px solid var(--main)}
+		.signature{margin-top:16px;color:#6b001f;font-style:italic}
+		.typewriter{display:inline-block;border-right:2px solid var(--main);padding-right:6px;animation:caret 700ms steps(1) infinite}
+		@keyframes caret{50%{border-color:transparent}100%{border-color:var(--main)}}
+		
+		.flower-piece{position:fixed;width:18px;height:18px;pointer-events:none;opacity:0;transform-origin:center;}
+		.flower-piece svg{width:100%;height:100%;display:block}
+		@keyframes flowerBurst{
+			0%{transform:translate(0,0) scale(.6) rotate(0);opacity:1}
+			100%{transform:translate(var(--tx), var(--ty)) scale(1.1) rotate(var(--rot));opacity:0}
+		}
+	</style>
+</head>
+<body>
+	<div class="card" role="main">
+		<div class="heart" aria-hidden="true">
+			<svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				<path d="M50 80 L18 46 A20 20 0 1 1 50 20 A20 20 0 1 1 82 46 Z" fill="#e91e63"/>
+			</svg>
+		</div>
+		<h1>Hi Baby Aiko Frac</h1>
+        <h2>I love you so much </h2>
+		<p><span id="msg" class="typewriter"></span></p>
+		<div class="buttons">
+			<button class="btn primary" id="reveal">Open your surprise</button>
+		</div>
+		<p class="signature">With love — someone who adores you 💌</p>
+	</div>
+
+	<script>
+		const messages = [
+			"Happy Valentine's Day, Aiko Frac!",
+			"May your day be full of smiles, warmth, and tiny surprises.",
+			"You are cherished today and every day."
+		];
+		let i=0, j=0;
+		const el = document.getElementById('msg');
+		function type(){
+			if(i>=messages.length) i=0;
+			const text = messages[i];
+			if(j<=text.length){ el.textContent = text.slice(0,j++); setTimeout(type,70); }
+			else { setTimeout(()=>{ j=0; i++; type(); }, 1400); }
+		}
+		type();
+
+		function burstFlowers(x, y, count = 24){
+			const colors = ['#ff6f91','#ff87a2','#ff466c','#ffb3c6','#ffd1dc'];
+			for(let k=0;k<count;k++){
+				const el = document.createElement('div');
+				el.className = 'flower-piece';
+				const size = 12 + Math.floor(Math.random()*14);
+				el.style.width = size + 'px';
+				el.style.height = size + 'px';
+				const color = colors[Math.floor(Math.random()*colors.length)];
+			
+				el.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="${color}"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="12" r="3"/><circle cx="12" cy="19" r="3"/><circle cx="19" cy="12" r="3"/><circle cx="7.6" cy="7.6" r="3"/></g><circle cx="12" cy="12" r="2.6" fill="#fff"/></svg>`;
+			el.style.left = (x - size/2) + 'px';
+			el.style.top = (y - size/2) + 'px';
+			const angle = Math.random()*Math.PI*2;
+			const dist = 80 + Math.random()*180;
+			const tx = Math.cos(angle)*dist + 'px';
+			const ty = Math.sin(angle)*dist + 'px';
+			const rot = (Math.random()*720 - 360) + 'deg';
+			el.style.setProperty('--tx', tx);
+			el.style.setProperty('--ty', ty);
+			el.style.setProperty('--rot', rot);
+			const dur = 900 + Math.floor(Math.random()*900);
+			el.style.animation = `flowerBurst ${dur}ms cubic-bezier(.2,.8,.2,1) forwards`;
+			document.body.appendChild(el);
+			setTimeout(()=>el.remove(), dur + 50);
+			
+			if(Math.random() < 0.12) awaitTick(10 + Math.random()*80);
+		}
+		}
+
+		function awaitTick(ms){return new Promise(r=>setTimeout(r,ms))}
+
+		document.getElementById('reveal').addEventListener('click', async (ev)=>{
+			const btn = ev.currentTarget;
+			const rect = btn.getBoundingClientRect();
+			const cx = rect.left + rect.width/2;
+			const cy = rect.top + rect.height/2;
+			burstFlowers(cx, cy, 28);
+			setTimeout(()=>burstFlowers(cx, cy, 18), 180);
+			setTimeout(()=>alert("Aiko Frac — you are amazing. Will you be my Valentine? ❤️"), 260);
+		});
+
+
+		function spawnHeart(){
+			const h = document.createElement('div');
+			h.className = 'float-heart';
+			h.style.left = (10 + Math.random()*80) + '%';
+			h.style.bottom = '-10px';
+			h.style.background = ['#ff6f91','#ff87a2','#ff466c'][Math.floor(Math.random()*3)];
+			h.style.animation = `floatUp ${3 + Math.random()*3}s linear forwards`;
+			document.body.appendChild(h);
+			setTimeout(()=>h.remove(), 6000);
+		}
+		setInterval(spawnHeart, 550);
+	</script>
+</body>
+</html>
+
